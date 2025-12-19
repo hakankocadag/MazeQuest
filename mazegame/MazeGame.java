@@ -36,7 +36,6 @@ public class MazeGame extends JFrame {
 
         processor = new CommandProcessor();
         soundManager = new SoundManager();
-        // Load from the file you placed under src/mazegame/background.wav (relative to project root)
         soundManager.loadBackground("src/mazegame/background.wav");
         
         setMazeSizeForLevel(currentLevel);
