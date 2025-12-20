@@ -134,3 +134,6 @@ This demonstrates sequencing, repetition, and action chaining—core algorithmic
 
 * **ControlPanel.java**
   Manages the code editor UI, line numbers, and execution controls.
+
+  <img width="456" height="331" alt="image" src="https://github.com/user-attachments/assets/0a689737-7e2d-4afd-8141-507171e906cb" />
+
