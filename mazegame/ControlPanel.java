@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.Component;
 
 public class ControlPanel extends JPanel {
-    public JButton btnRun, btnNew, btnExit, btnPause, btnStep;
+    public JButton btnRun, btnNew, btnExit, btnPause, btnStep, btnSkipLevel;
     public JTextField speedField;
     public JTextArea codeEditor;
     private JTextArea lineNumbers;
@@ -14,10 +14,12 @@ public class ControlPanel extends JPanel {
     public JLabel errorDisplay;
     public JLabel levelLabel;
     public JLabel efficiencyLabel;
+    public JLabel playerLabel;
+    public JComboBox<String> themeSelector;
     private int currentExecutingLine = -1;
     private int errorLine = -1;
 
-    public ControlPanel(JLabel scoreLabel) {
+    public ControlPanel(JLabel scoreLabel, String playerName) {
         this.scoreLabel = scoreLabel;
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -27,6 +29,13 @@ public class ControlPanel extends JPanel {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBackground(new Color(245, 255, 245));
+        
+        playerLabel = new JLabel("Player: " + playerName, SwingConstants.CENTER);
+        playerLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        playerLabel.setForeground(new Color(63, 81, 181));
+        playerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(playerLabel);
+        topPanel.add(Box.createVerticalStrut(5));
         
         levelLabel = new JLabel("Level: 1", SwingConstants.CENTER);
         levelLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -44,6 +53,21 @@ public class ControlPanel extends JPanel {
         efficiencyLabel.setForeground(new Color(0, 150, 136));
         efficiencyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         topPanel.add(efficiencyLabel);
+        topPanel.add(Box.createVerticalStrut(8));
+        
+        JLabel themeLabel = new JLabel("Theme:", SwingConstants.CENTER);
+        themeLabel.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        themeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(themeLabel);
+        topPanel.add(Box.createVerticalStrut(3));
+        
+        themeSelector = new JComboBox<>(new String[]{"Default", "Stranger Things"});
+        themeSelector.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        themeSelector.setMaximumSize(new Dimension(200, 25));
+        themeSelector.setAlignmentX(Component.CENTER_ALIGNMENT);
+        themeSelector.setBackground(new Color(180, 180, 180));
+        themeSelector.setForeground(Color.BLACK);
+        topPanel.add(themeSelector);
         topPanel.add(Box.createVerticalStrut(8));
 
         errorDisplay = new JLabel("", SwingConstants.CENTER);
@@ -67,7 +91,7 @@ public class ControlPanel extends JPanel {
 
         // Create code editor with line numbers
         codeEditor = new JTextArea();
-        codeEditor.setFont(new Font("Consolas", Font.PLAIN, 14));
+        codeEditor.setFont(new Font("Consolas", Font.PLAIN, 16));
         codeEditor.setBackground(new Color(255, 255, 255));
         codeEditor.setForeground(new Color(33, 33, 33));
         codeEditor.setTabSize(2);
@@ -76,7 +100,7 @@ public class ControlPanel extends JPanel {
         
         // Create line numbers area
         lineNumbers = new JTextArea("1");
-        lineNumbers.setFont(new Font("Consolas", Font.PLAIN, 14));
+        lineNumbers.setFont(new Font("Consolas", Font.PLAIN, 16));
         lineNumbers.setBackground(new Color(240, 240, 240));
         lineNumbers.setForeground(new Color(100, 100, 100));
         lineNumbers.setEditable(false);
@@ -155,11 +179,12 @@ public class ControlPanel extends JPanel {
         row1.add(btnRun); row1.add(btnPause); row1.add(btnStep);
         
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        btnNew = new JButton("NEW MAZE");
+        btnNew = new JButton("NEW GAME");
+        btnSkipLevel = new JButton("SKIP LEVEL");
         btnExit = new JButton("EXIT");
 
         Font btnFont2 = new Font("Segoe UI", Font.BOLD, 12);
-        btnNew.setFont(btnFont2); btnExit.setFont(btnFont2);
+        btnNew.setFont(btnFont2); btnSkipLevel.setFont(btnFont2); btnExit.setFont(btnFont2);
         
         btnNew.setBackground(new Color(255, 193, 7));
         btnNew.setForeground(new Color(33, 33, 33));
@@ -171,6 +196,19 @@ public class ControlPanel extends JPanel {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnNew.setBackground(new Color(255, 193, 7));
+            }
+        });
+        
+        btnSkipLevel.setBackground(new Color(103, 58, 183));
+        btnSkipLevel.setForeground(Color.WHITE);
+        btnSkipLevel.setFocusPainted(false);
+        btnSkipLevel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnSkipLevel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSkipLevel.setBackground(new Color(123, 78, 203));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSkipLevel.setBackground(new Color(103, 58, 183));
             }
         });
         
@@ -187,7 +225,7 @@ public class ControlPanel extends JPanel {
             }
         });
         
-        row2.add(btnNew); row2.add(btnExit);
+        row2.add(btnNew); row2.add(btnExit); row2.add(btnSkipLevel);
         
         JPanel row3 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         JLabel speedLabel = new JLabel("Speed (0-100):", SwingConstants.CENTER);
@@ -342,5 +380,62 @@ public class ControlPanel extends JPanel {
             "</body></html>";
         
         JOptionPane.showMessageDialog(this, helpText, "Syntax Help", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void applyTheme(String theme) {
+        if (theme.equals("Stranger Things")) {
+            setBackground(new Color(30, 30, 30));
+            
+            // Apply to all panels recursively
+            for (Component comp : getComponents()) {
+                applyThemeToComponent(comp, new Color(30, 30, 30), new Color(200, 200, 200));
+            }
+            
+            codeEditor.setBackground(new Color(40, 40, 40));
+            codeEditor.setForeground(new Color(255, 200, 200));
+            codeEditor.setCaretColor(Color.WHITE);
+            lineNumbers.setBackground(new Color(25, 25, 25));
+            lineNumbers.setForeground(new Color(150, 150, 150));
+        } else {
+            setBackground(new Color(245, 255, 245));
+            
+            // Apply to all panels recursively
+            for (Component comp : getComponents()) {
+                applyThemeToComponent(comp, new Color(245, 255, 245), new Color(33, 33, 33));
+            }
+            
+            codeEditor.setBackground(new Color(255, 255, 255));
+            codeEditor.setForeground(new Color(33, 33, 33));
+            codeEditor.setCaretColor(Color.BLACK);
+            lineNumbers.setBackground(new Color(240, 240, 240));
+            lineNumbers.setForeground(new Color(100, 100, 100));
+        }
+        repaint();
+    }
+    
+    private void applyThemeToComponent(Component comp, Color bgColor, Color fgColor) {
+        if (comp instanceof JPanel) {
+            comp.setBackground(bgColor);
+            JPanel panel = (JPanel) comp;
+            for (Component child : panel.getComponents()) {
+                applyThemeToComponent(child, bgColor, fgColor);
+            }
+        } else if (comp instanceof JLabel) {
+            // Skip labels with specific colors (like player, level, score, error)
+            if (!comp.equals(playerLabel) && !comp.equals(levelLabel) && !comp.equals(scoreLabel) && !comp.equals(errorDisplay) && !comp.equals(efficiencyLabel)) {
+                comp.setForeground(fgColor);
+            }
+        } else if (comp instanceof JTextField) {
+            if (comp.equals(speedField)) {
+                comp.setBackground(bgColor);
+                comp.setForeground(fgColor);
+            }
+        } else if (comp instanceof JScrollPane) {
+            comp.setBackground(bgColor);
+            JScrollPane scroll = (JScrollPane) comp;
+            if (scroll.getViewport() != null) {
+                scroll.getViewport().setBackground(bgColor);
+            }
+        }
     }
 }
