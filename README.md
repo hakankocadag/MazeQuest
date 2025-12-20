@@ -1,4 +1,4 @@
-# 🐰 MazeQuest – Algorithmic Maze Game
+# MazeQuest – Algorithmic Maze Game
 
 MazeQuest is an educational Java Swing game that teaches algorithmic thinking through play. Players write pseudocode to guide a character through randomly generated mazes, collect carrots, and reach the exit—while learning efficiency, control flow, and debugging concepts along the way.
 
@@ -9,7 +9,7 @@ The game blends classic maze generation algorithms with a simple scripting langu
 
 ---
 
-## 🎮 Game Features
+## Game Features
 
 ### Procedural Maze Generation
 
@@ -44,7 +44,7 @@ The game blends classic maze generation algorithms with a simple scripting langu
 
 ---
 
-## 🛠️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 
@@ -88,14 +88,14 @@ java -cp bin mazegame.MazeGame
 
 ---
 
-### 🔊 Sound Note
+### Sound Note
 
 The `SoundManager` looks for a file named `background.wav` inside the package directory.
 If the file is missing, the game will still run—just without background music.
 
 ---
 
-## 📜 Command Syntax Guide
+## Command Syntax Guide
 
 Commands are **case-insensitive** and can be combined.
 
@@ -111,7 +111,7 @@ Commands are **case-insensitive** and can be combined.
 
 ---
 
-## 🧠 Example Algorithm
+## Example Algorithm
 
 ```
 GO(3)           // Move forward 3 blocks
@@ -125,7 +125,7 @@ This demonstrates sequencing, repetition, and action chaining—core algorithmic
 
 ---
 
-## 📂 Class Overview
+## Class Overview
 
 **MazeGame.java**
 Main entry point. Handles window setup, game loop, and level transitions.
@@ -144,7 +144,7 @@ Manages the code editor UI, line numbers, and execution controls.
 
 ---
 
-## 🖼️ Gameplay Screenshots
+## Gameplay Screenshots
 
 The following images are captured directly from MazeQuest gameplay and demonstrate the maze layout, code editor, and step-by-step execution system.
 
