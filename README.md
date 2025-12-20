@@ -101,7 +101,6 @@ Commands are **case-insensitive** and can be combined.
 | `GO(n)`         | Move forward `n` steps              | `GO(5)`       |
 | `LEFT(n)`       | Turn left `n` times                 | `LEFT(2)`     |
 | `GO(n, ACTION)` | Move `n` times, then perform action | `GO(3, LEFT)` |
-<img width="872" height="817" alt="Ekran görüntüsü 2025-12-20 171153" src="https://github.com/user-attachments/assets/84d055e8-ed0b-42fa-8c91-11dea3bce937" />
 
 ---
 
@@ -136,7 +135,6 @@ This demonstrates sequencing, repetition, and action chaining—core algorithmic
 * **ControlPanel.java**
   Manages the code editor UI, line numbers, and execution controls.
 
-  <img width="413" height="180" alt="Ekran görüntüsü 2025-12-20 171029" src="https://github.com/user-attachments/assets/4386772f-b307-4dc2-89db-182a1d8159c7" />
   <img width="2069" height="1284" alt="Ekran görüntüsü 2025-12-20 171042" src="https://github.com/user-attachments/assets/e645e1c0-555c-43c2-b44d-3e10d0a09386" />
   <img width="2068" height="1275" alt="Ekran görüntüsü 2025-12-20 171126" src="https://github.com/user-attachments/assets/72e671b6-30ab-4c13-85dc-16cc17b4f0f0" />
   <img width="2064" height="1279" alt="Ekran görüntüsü 2025-12-20 171141" src="https://github.com/user-attachments/assets/fe8aadb0-d126-4653-8f6f-26bf6c723a91" />
