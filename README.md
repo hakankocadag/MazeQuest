@@ -1,8 +1,11 @@
+```markdown
 # 🐰 MazeQuest – Algorithmic Maze Game
 
 **MazeQuest** is an educational Java Swing game that teaches algorithmic thinking through play. Players write pseudocode to guide a character through randomly generated mazes, collect carrots, and reach the exit—while learning efficiency, control flow, and debugging concepts along the way.
 
 The game blends classic maze generation algorithms with a simple scripting language, making it ideal for students learning programming fundamentals.
+
+🔗 **GitHub Repository:** https://github.com/hakankocadag/MazeQuest
 
 ---
 
@@ -52,6 +55,7 @@ The game blends classic maze generation algorithms with a simple scripting langu
 Ensure your directory structure looks like this so images and sounds load correctly:
 
 ```
+
 MazeQuest/
 ├── src/
 │   └── mazegame/
@@ -63,7 +67,8 @@ MazeQuest/
 │       ├── SoundManager.java
 │       ├── Cell.java
 │       └── background.wav   // Optional background music
-```
+
+````
 
 ### Compiling and Running
 
@@ -73,7 +78,7 @@ Navigate to the project root directory.
 
 ```bash
 javac -d bin src/mazegame/*.java
-```
+````
 
 **Run:**
 
@@ -135,11 +140,15 @@ This demonstrates sequencing, repetition, and action chaining—core algorithmic
 * **ControlPanel.java**
   Manages the code editor UI, line numbers, and execution controls.
 
-  <img width="2069" height="1284" alt="Ekran görüntüsü 2025-12-20 171042" src="https://github.com/user-attachments/assets/e645e1c0-555c-43c2-b44d-3e10d0a09386" />
-  <img width="2068" height="1275" alt="Ekran görüntüsü 2025-12-20 171126" src="https://github.com/user-attachments/assets/72e671b6-30ab-4c13-85dc-16cc17b4f0f0" />
-  <img width="2064" height="1279" alt="Ekran görüntüsü 2025-12-20 171141" src="https://github.com/user-attachments/assets/fe8aadb0-d126-4653-8f6f-26bf6c723a91" />
+---
 
+## 🖼️ Gameplay Screenshots
 
+The following images are captured directly from MazeQuest gameplay and demonstrate the maze layout, code editor, and step-by-step execution system:
 
+<img width="2069" height="1284" alt="Gameplay Screenshot 1" src="https://github.com/user-attachments/assets/e645e1c0-555c-43c2-b44d-3e10d0a09386" />
 
+<img width="2068" height="1275" alt="Gameplay Screenshot 2" src="https://github.com/user-attachments/assets/72e671b6-30ab-4c13-85dc-16cc17b4f0f0" />
 
+<img width="2064" height="1279" alt="Gameplay Screenshot 3" src="https://github.com/user-attachments/assets/fe8aadb0-d126-4653-8f6f-26bf6c723a91" />
+```
