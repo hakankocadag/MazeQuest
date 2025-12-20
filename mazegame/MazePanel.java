@@ -21,6 +21,9 @@ public class MazePanel extends JPanel {
 
     private final int SMALL_CARROT_SCORE = 10;
     private final int EXIT_CARROT_SCORE = 100;
+    
+    private String currentTheme = "Default";
+    private Color bgColor1, bgColor2, wallColor, carrotColor, carrotStroke, doorColor, doorStroke, playerColor;
 
     public MazePanel(Cell[][] grid, boolean[][] carrots, int rows, int cols, JLabel scoreLabel, JFrame parent) {
         this.mazeGrid = grid;
@@ -30,7 +33,7 @@ public class MazePanel extends JPanel {
         this.scoreLabel = scoreLabel;
         this.parentFrame = parent;
         
-        setBackground(new Color(102, 204, 102));
+        applyTheme("Default");
         
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
@@ -65,6 +68,32 @@ public class MazePanel extends JPanel {
         int cs = getCellSize();
         int mazeHeight = mazeRows * cs;
         return (getHeight() - mazeHeight) / 2;
+    }
+    
+    public void applyTheme(String theme) {
+        this.currentTheme = theme;
+        if (theme.equals("Stranger Things")) {
+            bgColor1 = new Color(20, 20, 20);
+            bgColor2 = new Color(30, 30, 30);
+            wallColor = new Color(139, 0, 0);
+            carrotColor = new Color(255, 0, 0);
+            carrotStroke = new Color(180, 0, 0);
+            doorColor = new Color(80, 0, 0);
+            doorStroke = new Color(50, 0, 0);
+            playerColor = new Color(255, 255, 255);
+            setBackground(new Color(20, 20, 20));
+        } else {
+            bgColor1 = new Color(102, 204, 102);
+            bgColor2 = new Color(119, 221, 119);
+            wallColor = new Color(46, 125, 50);
+            carrotColor = new Color(255, 140, 0);
+            carrotStroke = new Color(230, 115, 0);
+            doorColor = new Color(139, 69, 19);
+            doorStroke = new Color(101, 67, 33);
+            playerColor = new Color(255, 255, 255);
+            setBackground(new Color(102, 204, 102));
+        }
+        repaint();
     }
 
     public void resetPlayer(int initialScore) {
@@ -147,9 +176,9 @@ public class MazePanel extends JPanel {
         for (int r = 0; r < mazeRows; r++) {
             for (int c = 0; c < mazeCols; c++) {
                 if ((r + c) % 2 == 0) {
-                    g2d.setColor(new Color(102, 204, 102));
+                    g2d.setColor(bgColor1);
                 } else {
-                    g2d.setColor(new Color(119, 221, 119));
+                    g2d.setColor(bgColor2);
                 }
                 g2d.fillRect(offsetX + c * cs, offsetY + r * cs, cs, cs);
             }
@@ -166,26 +195,56 @@ public class MazePanel extends JPanel {
                     int carrotX = x + cs / 2;
                     int carrotY = y + cs / 2;
                     
-                    Polygon carrot = new Polygon();
-                    carrot.addPoint(carrotX, carrotY + carrotHeight / 2);
-                    carrot.addPoint(carrotX - carrotWidth / 2, carrotY - carrotHeight / 4);
-                    carrot.addPoint(carrotX + carrotWidth / 2, carrotY - carrotHeight / 4);
-                    
-                    g2d.setColor(new Color(255, 140, 0));
-                    g2d.fillPolygon(carrot);
-                    g2d.setColor(new Color(230, 115, 0));
-                    g2d.setStroke(new BasicStroke(2));
-                    g2d.drawPolygon(carrot);
-                    
-                    g2d.setColor(new Color(76, 175, 80));
-                    g2d.setStroke(new BasicStroke(3));
-                    g2d.drawLine(carrotX - 3, carrotY - carrotHeight / 4, carrotX - 5, carrotY - carrotHeight / 2);
-                    g2d.drawLine(carrotX, carrotY - carrotHeight / 4, carrotX, carrotY - carrotHeight / 2 - 2);
-                    g2d.drawLine(carrotX + 3, carrotY - carrotHeight / 4, carrotX + 5, carrotY - carrotHeight / 2);
+                    if (currentTheme.equals("Stranger Things")) {
+                        // Draw Demogorgon (flower-like head with petals)
+                        int demoSize = (int)(cs * 0.6);
+                        int demoX = carrotX;
+                        int demoY = carrotY;
+                        
+                        // Body
+                        g2d.setColor(new Color(80, 20, 20));
+                        g2d.fillOval(demoX - demoSize/4, demoY - demoSize/4, demoSize/2, demoSize/2);
+                        
+                        // Petals (demogorgon head opening)
+                        g2d.setColor(new Color(139, 0, 0));
+                        int petalCount = 6;
+                        int petalLength = demoSize / 3;
+                        for (int i = 0; i < petalCount; i++) {
+                            double angle = (2 * Math.PI / petalCount) * i;
+                            int x1 = demoX;
+                            int y1 = demoY;
+                            int x2 = (int)(demoX + Math.cos(angle) * petalLength);
+                            int y2 = (int)(demoY + Math.sin(angle) * petalLength);
+                            g2d.setStroke(new BasicStroke(3));
+                            g2d.drawLine(x1, y1, x2, y2);
+                        }
+                        
+                        // Center (mouth)
+                        g2d.setColor(new Color(0, 0, 0));
+                        g2d.fillOval(demoX - demoSize/8, demoY - demoSize/8, demoSize/4, demoSize/4);
+                    } else {
+                        // Draw carrot
+                        Polygon carrot = new Polygon();
+                        carrot.addPoint(carrotX, carrotY + carrotHeight / 2);
+                        carrot.addPoint(carrotX - carrotWidth / 2, carrotY - carrotHeight / 4);
+                        carrot.addPoint(carrotX + carrotWidth / 2, carrotY - carrotHeight / 4);
+                        
+                        g2d.setColor(carrotColor);
+                        g2d.fillPolygon(carrot);
+                        g2d.setColor(carrotStroke);
+                        g2d.setStroke(new BasicStroke(2));
+                        g2d.drawPolygon(carrot);
+                        
+                        g2d.setColor(new Color(76, 175, 80));
+                        g2d.setStroke(new BasicStroke(3));
+                        g2d.drawLine(carrotX - 3, carrotY - carrotHeight / 4, carrotX - 5, carrotY - carrotHeight / 2);
+                        g2d.drawLine(carrotX, carrotY - carrotHeight / 4, carrotX, carrotY - carrotHeight / 2 - 2);
+                        g2d.drawLine(carrotX + 3, carrotY - carrotHeight / 4, carrotX + 5, carrotY - carrotHeight / 2);
+                    }
                 }
                 
                 Cell cell = mazeGrid[r][c];
-                g2d.setColor(new Color(46, 125, 50)); 
+                g2d.setColor(wallColor); 
                 g2d.setStroke(new BasicStroke(WALL_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 
                 if (cell.wallN) g2d.drawLine(x, y, x + cs, y);
@@ -203,10 +262,10 @@ public class MazePanel extends JPanel {
         int doorX = exitX + (cs - doorWidth) / 2;
         int doorY = exitY + (cs - doorHeight) / 2;
         
-        g2d.setColor(new Color(139, 69, 19));
+        g2d.setColor(doorColor);
         g2d.fillRoundRect(doorX, doorY, doorWidth, doorHeight, 10, 10);
         
-        g2d.setColor(new Color(101, 67, 33));
+        g2d.setColor(doorStroke);
         g2d.setStroke(new BasicStroke(3));
         g2d.drawRoundRect(doorX, doorY, doorWidth, doorHeight, 10, 10);
         
@@ -227,7 +286,7 @@ public class MazePanel extends JPanel {
         g2d.setColor(new Color(0, 0, 0, 40));
         g2d.fillOval(kidX + 2, kidY + 2, bunnySize, bunnySize);
         
-        g2d.setColor(new Color(255, 255, 255));
+        g2d.setColor(playerColor);
         g2d.fillOval(kidX, kidY, bunnySize, bunnySize);
         
         int earWidth = bunnySize / 4;
@@ -283,6 +342,15 @@ public class MazePanel extends JPanel {
         g2d.setStroke(new BasicStroke(2));
         g2d.drawOval(kidX, kidY, bunnySize, bunnySize);
         
+        // Draw blood stains if Stranger Things theme
+        if (currentTheme.equals("Stranger Things")) {
+            g2d.setColor(new Color(139, 0, 0));
+            // Random-looking blood splatters
+            g2d.fillOval(kidX + bunnySize/3, kidY + bunnySize/4, bunnySize/8, bunnySize/10);
+            g2d.fillOval(kidX + bunnySize/2, kidY + bunnySize/2, bunnySize/10, bunnySize/8);
+            g2d.fillOval(kidX + 2*bunnySize/3, kidY + 2*bunnySize/3, bunnySize/9, bunnySize/9);
+            g2d.fillOval(kidX + bunnySize/5, kidY + 3*bunnySize/5, bunnySize/11, bunnySize/10);
+        }
 
     }
 }
