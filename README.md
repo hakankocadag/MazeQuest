@@ -101,7 +101,7 @@ Commands are **case-insensitive** and can be combined.
 | `GO(n)`         | Move forward `n` steps              | `GO(5)`       |
 | `LEFT(n)`       | Turn left `n` times                 | `LEFT(2)`     |
 | `GO(n, ACTION)` | Move `n` times, then perform action | `GO(3, LEFT)` |
- <img width="2064" height="1279" alt="Ekran görüntüsü 2025-12-20 171141" src="https://github.com/user-attachments/assets/fe8aadb0-d126-4653-8f6f-26bf6c723a91" />
+<img width="872" height="817" alt="Ekran görüntüsü 2025-12-20 171153" src="https://github.com/user-attachments/assets/84d055e8-ed0b-42fa-8c91-11dea3bce937" />
 
 ---
 
