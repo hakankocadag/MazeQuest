@@ -13,144 +13,144 @@ public class CommandProcessor {
     private static final Pattern SIMPLE_COMMAND = Pattern.compile(
         "(GO|LEFT|RIGHT|CATCH)\\(\\)", Pattern.CASE_INSENSITIVE);
 
-    public String parseInput(String input) {
-        Matcher m = REPEAT_WITH_ACTION.matcher(input);
-        if (m.matches()) {
-            return m.group(1).toUpperCase() + "(" + m.group(2) + "," + m.group(3).toUpperCase() + ")";
+    public String parseInput(String userInputCommand) {
+        Matcher commandMatcher = REPEAT_WITH_ACTION.matcher(userInputCommand);
+        if (commandMatcher.matches()) {
+            return commandMatcher.group(1).toUpperCase() + "(" + commandMatcher.group(2) + "," + commandMatcher.group(3).toUpperCase() + ")";
         }
         
-        m = SIMPLE_REPEAT.matcher(input);
-        if (m.matches()) {
-            return m.group(1).toUpperCase() + "(" + m.group(2) + ")";
+        commandMatcher = SIMPLE_REPEAT.matcher(userInputCommand);
+        if (commandMatcher.matches()) {
+            return commandMatcher.group(1).toUpperCase() + "(" + commandMatcher.group(2) + ")";
         }
         
-        m = SIMPLE_COMMAND.matcher(input);
-        if (m.matches()) {
-            return m.group(1).toUpperCase() + "()";
+        commandMatcher = SIMPLE_COMMAND.matcher(userInputCommand);
+        if (commandMatcher.matches()) {
+            return commandMatcher.group(1).toUpperCase() + "()";
         }
         
         return null;
     }
 
-    public void reNumberCommands(DefaultListModel<String> model) {
-        ArrayList<String> commands = new ArrayList<>();
-        for (int i = 0; i < model.size(); i++) {
-            String cmd = model.getElementAt(i);
-            commands.add(cmd.substring(cmd.indexOf(":") + 2));
+    public void reNumberCommands(DefaultListModel<String> commandListModel) {
+        ArrayList<String> commandsWithoutLineNumbers = new ArrayList<>();
+        for (int commandIndex = 0; commandIndex < commandListModel.size(); commandIndex++) {
+            String numberedCommand = commandListModel.getElementAt(commandIndex);
+            commandsWithoutLineNumbers.add(numberedCommand.substring(numberedCommand.indexOf(":") + 2));
         }
-        model.clear();
-        for (int i = 0; i < commands.size(); i++) {
-            model.addElement((i + 1) + ": " + commands.get(i));
+        commandListModel.clear();
+        for (int commandIndex = 0; commandIndex < commandsWithoutLineNumbers.size(); commandIndex++) {
+            commandListModel.addElement((commandIndex + 1) + ": " + commandsWithoutLineNumbers.get(commandIndex));
         }
     }
 
-    public ArrayList<Character> getExecutionSequence(DefaultListModel<String> model) {
-        ArrayList<Character> sequence = new ArrayList<>();
-        for (int i = 0; i < model.size(); i++) {
-            String rawCmd = model.getElementAt(i);
-            String cmd = rawCmd.substring(rawCmd.indexOf(":") + 2);
+    public ArrayList<Character> getExecutionSequence(DefaultListModel<String> commandListModel) {
+        ArrayList<Character> actionSequence = new ArrayList<>();
+        for (int commandIndex = 0; commandIndex < commandListModel.size(); commandIndex++) {
+            String numberedCommandLine = commandListModel.getElementAt(commandIndex);
+            String cleanCommand = numberedCommandLine.substring(numberedCommandLine.indexOf(":") + 2);
             
-            Matcher m = REPEAT_WITH_ACTION.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                char mainAction = m.group(1).toUpperCase().charAt(0);
-                char followAction = m.group(3).toUpperCase().charAt(0);
-                for (int k = 0; k < count; k++) sequence.add(mainAction);
-                sequence.add(followAction);
+            Matcher commandMatcher = REPEAT_WITH_ACTION.matcher(cleanCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                char primaryActionCharacter = commandMatcher.group(1).toUpperCase().charAt(0);
+                char followingActionCharacter = commandMatcher.group(3).toUpperCase().charAt(0);
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) actionSequence.add(primaryActionCharacter);
+                actionSequence.add(followingActionCharacter);
                 continue;
             }
             
-            m = SIMPLE_REPEAT.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                char action = m.group(1).toUpperCase().charAt(0);
-                for (int k = 0; k < count; k++) sequence.add(action);
+            commandMatcher = SIMPLE_REPEAT.matcher(cleanCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                char actionCharacter = commandMatcher.group(1).toUpperCase().charAt(0);
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) actionSequence.add(actionCharacter);
                 continue;
             }
             
-            if (cmd.startsWith("GO")) sequence.add('G');
-            else if (cmd.startsWith("LEFT")) sequence.add('L');
-            else if (cmd.startsWith("RIGHT")) sequence.add('R');
-            else if (cmd.startsWith("CATCH")) sequence.add('C');
+            if (cleanCommand.startsWith("GO")) actionSequence.add('G');
+            else if (cleanCommand.startsWith("LEFT")) actionSequence.add('L');
+            else if (cleanCommand.startsWith("RIGHT")) actionSequence.add('R');
+            else if (cleanCommand.startsWith("CATCH")) actionSequence.add('C');
         }
-        return sequence;
+        return actionSequence;
     }
     
-    public ArrayList<Integer> getLineMapping(DefaultListModel<String> model) {
-        ArrayList<Integer> mapping = new ArrayList<>();
-        for (int i = 0; i < model.size(); i++) {
-            String rawCmd = model.getElementAt(i);
-            String cmd = rawCmd.substring(rawCmd.indexOf(":") + 2);
+    public ArrayList<Integer> getLineMapping(DefaultListModel<String> commandListModel) {
+        ArrayList<Integer> sourceLineIndexMapping = new ArrayList<>();
+        for (int commandIndex = 0; commandIndex < commandListModel.size(); commandIndex++) {
+            String numberedCommandLine = commandListModel.getElementAt(commandIndex);
+            String cleanCommand = numberedCommandLine.substring(numberedCommandLine.indexOf(":") + 2);
             
-            Matcher m = REPEAT_WITH_ACTION.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                for (int k = 0; k < count + 1; k++) mapping.add(i);
+            Matcher commandMatcher = REPEAT_WITH_ACTION.matcher(cleanCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount + 1; repetitionIndex++) sourceLineIndexMapping.add(commandIndex);
                 continue;
             }
             
-            m = SIMPLE_REPEAT.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                for (int k = 0; k < count; k++) mapping.add(i);
+            commandMatcher = SIMPLE_REPEAT.matcher(cleanCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) sourceLineIndexMapping.add(commandIndex);
                 continue;
             }
             
-            mapping.add(i);
+            sourceLineIndexMapping.add(commandIndex);
         }
-        return mapping;
+        return sourceLineIndexMapping;
     }
     
-    public ArrayList<Character> getExecutionSequenceFromCommands(ArrayList<String> commands) {
-        ArrayList<Character> sequence = new ArrayList<>();
-        for (String cmd : commands) {
-            Matcher m = REPEAT_WITH_ACTION.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                char mainAction = m.group(1).toUpperCase().charAt(0);
-                char followAction = m.group(3).toUpperCase().charAt(0);
-                for (int k = 0; k < count; k++) sequence.add(mainAction);
-                sequence.add(followAction);
+    public ArrayList<Character> getExecutionSequenceFromCommands(ArrayList<String> commandList) {
+        ArrayList<Character> actionSequence = new ArrayList<>();
+        for (String currentCommand : commandList) {
+            Matcher commandMatcher = REPEAT_WITH_ACTION.matcher(currentCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                char primaryActionCharacter = commandMatcher.group(1).toUpperCase().charAt(0);
+                char followingActionCharacter = commandMatcher.group(3).toUpperCase().charAt(0);
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) actionSequence.add(primaryActionCharacter);
+                actionSequence.add(followingActionCharacter);
                 continue;
             }
             
-            m = SIMPLE_REPEAT.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                char action = m.group(1).toUpperCase().charAt(0);
-                for (int k = 0; k < count; k++) sequence.add(action);
+            commandMatcher = SIMPLE_REPEAT.matcher(currentCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                char actionCharacter = commandMatcher.group(1).toUpperCase().charAt(0);
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) actionSequence.add(actionCharacter);
                 continue;
             }
             
-            if (cmd.startsWith("GO")) sequence.add('G');
-            else if (cmd.startsWith("LEFT")) sequence.add('L');
-            else if (cmd.startsWith("RIGHT")) sequence.add('R');
-            else if (cmd.startsWith("CATCH")) sequence.add('C');
+            if (currentCommand.startsWith("GO")) actionSequence.add('G');
+            else if (currentCommand.startsWith("LEFT")) actionSequence.add('L');
+            else if (currentCommand.startsWith("RIGHT")) actionSequence.add('R');
+            else if (currentCommand.startsWith("CATCH")) actionSequence.add('C');
         }
-        return sequence;
+        return actionSequence;
     }
     
-    public ArrayList<Integer> getLineMappingFromCommands(ArrayList<String> commands) {
-        ArrayList<Integer> mapping = new ArrayList<>();
-        for (int i = 0; i < commands.size(); i++) {
-            String cmd = commands.get(i);
+    public ArrayList<Integer> getLineMappingFromCommands(ArrayList<String> commandList) {
+        ArrayList<Integer> sourceLineIndexMapping = new ArrayList<>();
+        for (int commandIndex = 0; commandIndex < commandList.size(); commandIndex++) {
+            String currentCommand = commandList.get(commandIndex);
             
-            Matcher m = REPEAT_WITH_ACTION.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                for (int k = 0; k < count + 1; k++) mapping.add(i);
+            Matcher commandMatcher = REPEAT_WITH_ACTION.matcher(currentCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount + 1; repetitionIndex++) sourceLineIndexMapping.add(commandIndex);
                 continue;
             }
             
-            m = SIMPLE_REPEAT.matcher(cmd);
-            if (m.matches()) {
-                int count = Integer.parseInt(m.group(2));
-                for (int k = 0; k < count; k++) mapping.add(i);
+            commandMatcher = SIMPLE_REPEAT.matcher(currentCommand);
+            if (commandMatcher.matches()) {
+                int repetitionCount = Integer.parseInt(commandMatcher.group(2));
+                for (int repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) sourceLineIndexMapping.add(commandIndex);
                 continue;
             }
             
-            mapping.add(i);
+            sourceLineIndexMapping.add(commandIndex);
         }
-        return mapping;
+        return sourceLineIndexMapping;
     }
 }
