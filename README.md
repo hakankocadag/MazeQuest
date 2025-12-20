@@ -149,7 +149,10 @@ Manages the code editor UI, line numbers, and execution controls.
 The following images are captured directly from MazeQuest gameplay and demonstrate the maze layout, code editor, and step-by-step execution system.
 
 ![Gameplay Screenshot 1](https://github.com/user-attachments/assets/e645e1c0-555c-43c2-b44d-3e10d0a09386)
+*Default theme — Level 1 (introductory maze size and mechanics)*
 
 ![Gameplay Screenshot 2](https://github.com/user-attachments/assets/72e671b6-30ab-4c13-85dc-16cc17b4f0f0)
+*Default theme — Level 4 (larger maze with increased complexity)*
 
 ![Gameplay Screenshot 3](https://github.com/user-attachments/assets/fe8aadb0-d126-4653-8f6f-26bf6c723a91)
+*Stranger Things theme — alternate visual style with the same algorithmic gameplay*
