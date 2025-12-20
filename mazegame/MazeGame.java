@@ -13,6 +13,7 @@ public class MazeGame extends JFrame {
     private int currentLevel = 1;
     private int mazeRows;
     private int mazeCols;
+    private String playerName;
     
     private Cell[][] currentMazeData;
     private boolean[][] carrotGrid;
@@ -33,10 +34,19 @@ public class MazeGame extends JFrame {
         setTitle("MazeQuest");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        
+        // Ask for player name
+        playerName = JOptionPane.showInputDialog(null, 
+            "Enter your name to begin the game:", 
+            "Welcome to MazeQuest!", 
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (playerName == null || playerName.trim().isEmpty()) {
+            playerName = "Player";
+        }
 
         processor = new CommandProcessor();
         soundManager = new SoundManager();
-        soundManager.loadBackground("src/mazegame/background.wav");
         
         setMazeSizeForLevel(currentLevel);
         generateNewGameData();
@@ -47,12 +57,10 @@ public class MazeGame extends JFrame {
         scoreLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
         mazePanel = new MazePanel(currentMazeData, carrotGrid, mazeRows, mazeCols, scoreLabel, this);
-        controlPanel = new ControlPanel(scoreLabel);
+        controlPanel = new ControlPanel(scoreLabel, playerName);
 
         add(mazePanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.EAST);
-
-        soundManager.playBackground();
 
         setupEvents();
         addWindowListener(new WindowAdapter() {
@@ -63,14 +71,20 @@ public class MazeGame extends JFrame {
             }
         });
         setupWindow();
+        
+        // Start music after window is set up
+        soundManager.loadBackground("src/mazegame/background.wav");
+        soundManager.playBackground();
     }
     
     private void setMazeSizeForLevel(int level) {
-        if (level == 1) { mazeRows = 4; mazeCols = 5; }
-        else if (level == 2) { mazeRows = 5; mazeCols = 7; }
-        else if (level == 3) { mazeRows = 6; mazeCols = 8; }
-        else if (level == 4) { mazeRows = 7; mazeCols = 10; }
-        else { mazeRows = 8; mazeCols = 12; }
+        if (level <= 10) {
+            mazeRows = level + 3;
+            mazeCols = 3 + (2 * level);
+        } else {
+            mazeRows = 13;
+            mazeCols = 23;
+        }
     }
 
     private void generateNewGameData() {
@@ -101,6 +115,8 @@ public class MazeGame extends JFrame {
         controlPanel.btnPause.addActionListener(e -> pauseExecution());
         controlPanel.btnStep.addActionListener(e -> stepExecution());
         controlPanel.btnNew.addActionListener(e -> startNewGame());
+        controlPanel.btnSkipLevel.addActionListener(e -> skipLevel());
+        controlPanel.themeSelector.addActionListener(e -> changeTheme());
         controlPanel.btnExit.addActionListener(e -> {
             soundManager.stopBackground();
             soundManager.closeClip();
@@ -119,6 +135,57 @@ public class MazeGame extends JFrame {
         controlPanel.efficiencyLabel.setText("Moves: 0");
         controlPanel.clearHighlights();
         controlPanel.codeEditor.requestFocusInWindow();
+    }
+
+    private void skipLevel() {
+        if (executionTimer != null && executionTimer.isRunning()) {
+            executionTimer.stop();
+        }
+        
+        if (currentLevel >= 10) {
+            JOptionPane.showMessageDialog(this, 
+                "🎉 YOU WON! 🎉\n\n" +
+                "You completed all 10 levels!\n\n" +
+                "If you want to replay with different mazes,\n" +
+                "click NEW GAME.\n\n" +
+                "Or begin to code with Python!",
+                "Game Complete!", JOptionPane.INFORMATION_MESSAGE);
+            
+            controlPanel.btnRun.setEnabled(false);
+            controlPanel.btnPause.setEnabled(false);
+            controlPanel.btnStep.setEnabled(false);
+            controlPanel.btnSkipLevel.setEnabled(false);
+            return;
+        }
+        
+        currentLevel++;
+        setMazeSizeForLevel(currentLevel);
+        generateNewGameData();
+        mazePanel.updateMazeData(currentMazeData, carrotGrid, mazeRows, mazeCols);
+        controlPanel.clearCode();
+        controlPanel.levelLabel.setText("Level: " + currentLevel);
+        controlPanel.efficiencyLabel.setText("Moves: 0");
+        controlPanel.clearHighlights();
+        controlPanel.btnRun.setEnabled(true);
+        controlPanel.btnPause.setEnabled(false);
+        controlPanel.btnStep.setEnabled(false);
+        controlPanel.codeEditor.requestFocusInWindow();
+    }
+    
+    private void changeTheme() {
+        String selectedTheme = (String) controlPanel.themeSelector.getSelectedItem();
+        mazePanel.applyTheme(selectedTheme);
+        controlPanel.applyTheme(selectedTheme);
+        
+        soundManager.stopBackground();
+        soundManager.closeClip();
+        
+        if (selectedTheme.equals("Stranger Things")) {
+            soundManager.loadBackground("src/mazegame/videoplayback.wav");
+        } else {
+            soundManager.loadBackground("src/mazegame/background.wav");
+        }
+        soundManager.playBackground();
     }
 
     private void executeInstructions(ActionEvent e) {
@@ -198,6 +265,21 @@ public class MazeGame extends JFrame {
                         executionTimer.stop();
                         controlPanel.clearHighlights();
                         int finalScore = mazePanel.getTotalScore() + 100;
+                        
+                        if (currentLevel == 10) {
+                            JOptionPane.showMessageDialog(this, 
+                                "🎉 YOU WON! 🎉\n\n" +
+                                "Final Score: " + finalScore + "\n" +
+                                "Moves used: " + currentSequence.size() + "\n\n" +
+                                "Now learn how to code!",
+                                "Game Complete!", JOptionPane.INFORMATION_MESSAGE);
+                            
+                            controlPanel.btnRun.setEnabled(false);
+                            controlPanel.btnPause.setEnabled(false);
+                            controlPanel.btnStep.setEnabled(false);
+                            controlPanel.btnSkipLevel.setEnabled(false);
+                            return;
+                        }
                         
                         JOptionPane.showMessageDialog(this, 
                             "Level Complete!\n" +
