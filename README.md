@@ -68,24 +68,6 @@ MazeQuest/
 
 ---
 
-### Compiling and Running
-
-Navigate to the project root directory.
-
-**Compile:**
-
-```
-javac -d bin src/mazegame/*.java
-```
-
-**Run:**
-
-```
-java -cp bin mazegame.MazeGame
-```
-
----
-
 ### Sound Note
 
 The `SoundManager` looks for a file named `background.wav` inside the package directory.
