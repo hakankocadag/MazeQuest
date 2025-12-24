@@ -4,8 +4,6 @@ MazeQuest is an educational Java Swing game that teaches algorithmic thinking th
 
 The game blends classic maze generation algorithms with a simple scripting language, making it ideal for students learning programming fundamentals.
 
-**GitHub Repository:**
-[https://github.com/hakankocadag/MazeQuest](https://github.com/hakankocadag/MazeQuest)
 
 ---
 
